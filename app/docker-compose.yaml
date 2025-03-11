@@ -1,25 +1,20 @@
-services:
-  app:
-    image: node:18-alpine
-    command: sh -c "yarn install && yarn run dev"
-    ports:
-      - 3000:3000
-    working_dir: /app
-    volumes:
-      - ./:/app
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: secret
-      MYSQL_DB: todos
+version: '3.8'
 
+services:
   mysql:
-    image: mysql:8.0
+    image: mysql:latest
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: myappdb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
     volumes:
-      - todo-mysql-data:/var/lib/mysql
-    environment: 
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: todos
+      - mysql_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "3306:3306"
 
 volumes:
-  todo-mysql-data:
+  mysql_data:
