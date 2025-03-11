@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap-script
+data:
+  init-db.sql: |
+    CREATE TABLE IF NOT EXISTS student (
+      ID INT AUTO_INCREMENT PRIMARY KEY,
+      Name VARCHAR(255) NOT NULL,
+      Email VARCHAR(255) NOT NULL
+    );
