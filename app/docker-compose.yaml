@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   mysql:
@@ -11,10 +10,46 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
     volumes:
+      - /c/Users/rafae/Documents/ProjetDockerKubernetes/kubernetesApp/app/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
       - mysql_data:/var/lib/mysql
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     ports:
       - "3306:3306"
+    networks:
+      - mynetwork
+
+  backend:
+    build:
+      context: "C:/Users/rafae/OneDrive/Documents/Ingénieur/I1/MicroService/ProjetDockerKubernetes/kubernetesWeb/server"
+    container_name: backend
+    restart: always
+    environment:
+      DB_HOST: mysql
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: myappdb
+      NODE_ENV: production
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    networks:
+      - mynetwork
+
+  frontend:
+    build:
+      context: "C:/Users/rafae/OneDrive/Documents/Ingénieur/I1/MicroService/ProjetDockerKubernetes/kubernetesWeb/client"
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql
+      - backend
+    networks:
+      - mynetwork
 
 volumes:
   mysql_data:
+
+networks:
+  mynetwork:
